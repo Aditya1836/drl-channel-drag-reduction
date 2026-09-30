@@ -1,0 +1,19 @@
+# SAC Hyperparameters for Channel Flow Control
+# Adapted for parameter-sharing approach (2 states, 1 action per actuator)
+
+sac_params:
+  gamma: 0.99              # discount factor (matches Tensorforce case)
+  tau: 0.005               # soft update coefficient for target networks
+  buffer_size: 100000      # replay buffer size
+  batch_size: 256          # training batch size
+  gradient_steps: 100      # gradient updates per training call
+  learning_starts: 1000    # minimum transitions before first training
+  ent_coef: auto           # automatic entropy tuning
+  target_entropy: auto     # automatic target entropy
+
+# Policy network architecture (small - only 2 inputs)
+policy_kwargs:
+  net_arch:
+    pi: [64, 64]           # actor: 2 hidden layers of 64
+    qf: [64, 64]           # critic: 2 hidden layers of 64
+  activation_fn: Tanh

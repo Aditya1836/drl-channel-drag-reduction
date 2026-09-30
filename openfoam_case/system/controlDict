@@ -1,0 +1,149 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+FoamFile
+{
+    version         2;
+    format          ascii;
+    class           dictionary;
+    object          controlDict;
+}
+
+application     pimpleFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         4;
+
+deltaT          0.02;
+
+writeControl    runTime;
+
+writeInterval   1;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  10;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+libs            ( channelControl );
+
+timeStart       0;
+
+functions
+{
+    wallShearStress
+    {
+        type            wallShearStress;
+        libs            ( fieldFunctionObjects );
+        log             yes;
+        patches         ( wall );
+        writePrecision  10;
+        writeFields     yes;
+        writeToFile     yes;
+        executeControl  timeStep;
+        executeInterval 1;
+        writeControl    writeTime;
+        timeStart       0;
+    }
+    Cf
+    {
+        type            coded;
+        libs            ( utilityFunctionObjects );
+        name            Cf;
+        timeStart       0;
+        executeControl  timeStep;
+        executeInterval 1;
+        writeControl    writeTime;
+        codeExecute     #{
+        auto* CfPtr =
+            mesh().getObjectPtr<volScalarField>("Cf");
+
+        if (!CfPtr)
+        {
+            Info<< "Create skin-friction coefficient field" << nl;
+            CfPtr = new volScalarField
+            (
+                IOobject
+                (
+                    "Cf",
+                    mesh().time().timeName(),
+                    mesh(),
+                    IOobject::NO_READ,
+                    IOobject::AUTO_WRITE,
+                    IOobject::REGISTER
+                ),
+                mesh(),
+                dimless
+            );
+
+            regIOobject::store(CfPtr);
+        }
+
+        auto& Cf = *CfPtr;
+
+        Info<< "Computing skin-friction coefficient field\n" << endl;
+
+        const auto& tau =
+            mesh().lookupObject<volVectorField>("wallShearStress");
+
+        const dimensionedScalar Ubulk(dimVelocity, 0.1335);
+
+        Cf = mag(tau.component(0))/(0.5*sqr(Ubulk));
+    #};
+    }
+    fieldAverage1
+    {
+        type            fieldAverage;
+        libs            ( fieldFunctionObjects );
+        writeControl    writeTime;
+        timeStart       0;
+        fields          ( Cf { mean on ; prime2Mean off ; base time ; windowType exact ; window 0.4 ; windowName movingAvg ; allowRestart false ; } );
+    }
+    friction
+    {
+        type            surfaceFieldValue;
+        libs            ( fieldFunctionObjects );
+        fields          ( wallShearStress );
+        operation       areaAverage;
+        regionType      patch;
+        name            wall;
+        writeFields     false;
+        executeControl  runTime;
+        executeInterval 0.4;
+        writeControl    runTime;
+        writeInterval   0.4;
+    }
+    probes
+    {
+        type            probes;
+        libs            ( sampling );
+        writeControl    timeStep;
+        writeInterval   1;
+        fixedLocations  true;
+        interpolationScheme cellPoint;
+        fields          ( U );
+        probeLocations  ( ( 1.57 0.08333 0.785 ) );
+    }
+}
+
+
+// ************************************************************************* //

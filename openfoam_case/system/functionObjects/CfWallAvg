@@ -1,0 +1,14 @@
+friction
+{
+    type            surfaceFieldValue;
+    libs            (fieldFunctionObjects);
+    fields          (wallShearStress);
+    operation       areaAverage;
+    regionType      patch;
+    name            wall;
+    writeFields     false;
+    executeControl  runTime;
+    executeInterval 0.4;
+    writeControl    runTime;
+    writeInterval   0.4;
+}

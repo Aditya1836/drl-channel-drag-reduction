@@ -1,0 +1,33 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2112                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      changeDictionaryDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+U
+{
+    boundaryField
+    {
+        wall
+        {
+            type             channelDRLControl;
+            ySample          0.08333;
+            deterministic    true;
+            controlPeriod    0.4;
+            frictionVelocity 0.00844;
+            rampUpPeriod     0.2;
+            policyDir        "model";
+            value            uniform (0 0 0);
+        }              
+    }
+}
+// ************************************************************************* //

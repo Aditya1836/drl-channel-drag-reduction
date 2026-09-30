@@ -1,0 +1,58 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+wallShearStress
+{
+    type                wallShearStress;
+    libs                (fieldFunctionObjects);
+    log                 yes;
+    patches             ( wall );
+    writePrecision      10;
+    writeFields         yes;
+    writeToFile         yes;
+    executeControl      timeStep;
+    executeInterval     1;
+    writeControl        writeTime;
+    timeStart           $/timeStart;
+}
+
+// WSS
+// {
+//     type            surfaces;
+//     libs            (sampling);
+//     writeControl    onEnd;
+//     fields          (wallShearStressMean);
+//     surfaceFormat   raw;
+//     store           true;
+//     interpolationScheme cell;
+
+//     surfaces
+//     {
+//         wall
+//         {
+//             type            patch;
+//             patches         ( wall );
+//             interpolate     false;
+//             enabled         true;
+//         }     
+//     }
+// }
+
+
+// WSSAvg
+// {
+//     type            surfaceFieldValue;
+//     libs            (fieldFunctionObjects);
+
+//     //writeControl    onEnd;
+//     fields          (wallShearStressMean);
+//     operation       areaAverage;
+//     regionType      patch;
+//     name            wall;
+//     writeFields     false;
+// }

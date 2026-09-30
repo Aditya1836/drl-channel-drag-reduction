@@ -1,0 +1,4 @@
+#!/bin/sh
+cd "${0%/*}" || exit
+nProcs=$(foamDictionary -entry numberOfSubdomains -value system/decomposeParDict)
+mpirun -n $nProcs pimpleFoam -parallel > log.pimpleFoam 2>&1

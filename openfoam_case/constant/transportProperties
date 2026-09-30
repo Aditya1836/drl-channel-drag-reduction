@@ -1,0 +1,25 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2112                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      transportProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+Ubar            (0.1335 0 0);
+
+transportModel  Newtonian;
+
+nu              4.7679e-05;//2e-05; The original value (2e-5) corresponds to 
+//Re_b = 13350 and Re_tau = 395. The current value is scaled up to Re_b = 5600 and Re_tau = 180
+
+
+// ************************************************************************* //

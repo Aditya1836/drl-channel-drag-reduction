@@ -1,0 +1,59 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                               |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+Cf
+{
+    type                coded;
+    libs                (utilityFunctionObjects);
+    name                Cf;
+    timeStart           $/timeStart;
+    executeControl      timeStep;
+    executeInterval     1;
+    writeControl        writeTime;
+
+    codeExecute
+    #{
+        auto* CfPtr =
+            mesh().getObjectPtr<volScalarField>("Cf");
+
+        if (!CfPtr)
+        {
+            Info<< "Create skin-friction coefficient field" << nl;
+            CfPtr = new volScalarField
+            (
+                IOobject
+                (
+                    "Cf",
+                    mesh().time().timeName(),
+                    mesh(),
+                    IOobject::NO_READ,
+                    IOobject::AUTO_WRITE,
+                    IOobject::REGISTER
+                ),
+                mesh(),
+                dimless
+            );
+
+            regIOobject::store(CfPtr);
+        }
+
+        auto& Cf = *CfPtr;
+
+        Info<< "Computing skin-friction coefficient field\n" << endl;
+
+        const auto& tau =
+            mesh().lookupObject<volVectorField>("wallShearStress");
+
+        const dimensionedScalar Ubulk(dimVelocity, 0.1335);
+
+        Cf = mag(tau.component(0))/(0.5*sqr(Ubulk));
+    #};
+}
+
+
+// ************************************************************************* //

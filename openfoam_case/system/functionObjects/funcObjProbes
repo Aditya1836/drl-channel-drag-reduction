@@ -1,0 +1,133 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2112                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+probes1
+{
+    type	        patchProbes;
+    libs	        (sampling);
+    writeControl    timeStep;
+    writeInterval   1;
+    fixedLocations	true;
+    patch           wall;
+    fields          ( Uy );
+    probeLocations
+    (
+        (0.1 0 0.1)
+        (0.2 0 0.2)
+        (0.3 0 0.3)
+        (0.4 0 0.4)
+        (0.5 0 0.5)
+        (0.6 0 0.6)
+        (0.7 0 0.7)
+        (0.8 0 0.8)
+        (0.9 0 0.9)
+    );
+}
+
+
+// probes2
+// {
+//     type	        probes;
+//     libs	        (sampling);
+//     writeControl    timeStep;
+//     writeInterval   1;
+//     fixedLocations	true;
+//     interpolationScheme cell;  
+//     fields          ( Uy );
+//     probeLocations
+//     (
+//         (0.1 0.08333 0.1)
+//         (0.2 0.08333 0.2)
+//         (0.3 0.08333 0.3)
+//         (0.4 0.08333 0.4)
+//         (0.5 0.08333 0.5)
+//         (0.6 0.08333 0.6)
+//         (0.7 0.08333 0.7)
+//         (0.8 0.08333 0.8)
+//         (0.9 0.08333 0.9)        
+//     );
+// }
+
+
+
+
+// sampled
+// {
+//     type    surfaces;
+//     libs    (sampling);
+//     log     true;
+//     executeControl  timeStep;
+//     executeInterval 1;
+//     writeControl    none;
+//     sampleOnExecute true;
+//     surfaceFormat   none;
+//     fields          ( Uy );
+
+//     _plane
+//     {
+//         type    plane;
+//         source  cells;
+//         store   true;
+//         planeType   pointAndNormal;
+//     }
+
+//     surfaces
+//     {
+//         plane_yp15
+//         {
+//             ${_plane}
+//             pointAndNormalDict
+//             {
+//                 normal (0 1 0);
+//                 point  (0 0.08333 0);
+//             }
+//         }
+//     }
+// }
+
+
+// UyMeanAt15
+// {
+//     type            surfaceFieldValue;
+//     libs            (fieldFunctionObjects);
+//     writeControl    timeStep;
+//     fields          (Uy);
+//     operation       areaAverage;
+//     regionType      functionObjectSurface;
+//     name            sampled.plane_yp15;
+//     writeFields     false;
+// }
+
+// UyMaxAt15
+// {
+//     type            surfaceFieldValue;
+//     libs            (fieldFunctionObjects);
+//     writeControl    timeStep;
+//     fields          (Uy);
+//     operation       max;
+//     regionType      functionObjectSurface;
+//     name            sampled.plane_yp15;
+//     writeFields     false;
+// }
+
+
+    // type            surfaceFieldValue;
+    // libs            (fieldFunctionObjects);
+    // log             false;
+    // enabled         true;
+    // writeControl    timeStep;
+    // writeInterval   1;
+    // writeFields     false;
+    // surfaceFormat   vtk;
+    // // operation       weightedSum;
+    // // weightField     phi;
+    // operation       weightedAreaIntegrate;
+    // weightField     rhoU;
+    // fields          ( momentOfMomentum );
+
+// ************************************************************************* //

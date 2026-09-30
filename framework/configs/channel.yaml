@@ -1,0 +1,24 @@
+# Channel Flow DRL Control - SB3 Configuration
+# Adapted from channel_Tensorforce to use Stable Baselines 3
+
+name: channel
+base_case: base
+policy_dir: model
+state_field: U
+run_cases: run
+
+# RL formulation (parameter sharing: each wall cell is a mini-agent)
+n_states: 2              # (u, v) velocity at sampling height per actuator
+n_actuators: 1064        # number of wall cells with blowing/suction
+n_actions: 4             # control actions per episode
+action_time_step: 0.4    # seconds between control actions
+
+# Reward
+reward_function: friction
+U_bulk: 0.1335           # bulk velocity for Cf calculation
+u_tau: 0.00844           # uncontrolled friction velocity
+
+# CFD settings
+CFD_time_step: 0.02      # OpenFOAM deltaT
+parallel: true
+max_waiting_time: 10     # minutes
